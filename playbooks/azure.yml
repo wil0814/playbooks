@@ -1,0 +1,54 @@
+---
+- hosts: azure
+  tasks:
+      # task 1
+    - name: apt update
+      become: yes
+      apt:
+        update_cache: yes
+
+    - name: install nginx
+      become: yes
+      apt:
+        name: nginx
+        state: present
+
+    - name: install php7.2-fpm
+      become: yes
+      apt: 
+        name: php7.2-fpm
+        state: present
+    - name: install php 7.2-mysql
+      become: yes
+      apt:
+        name: php7.2-mysql
+        state: present
+    
+    - name: php.ini
+      become: yes
+      copy:
+        src: ~/test/php.ini
+        dest: /etc/php/7.2/fpm/php.ini
+    - name: restate php
+      become: yes
+      service:
+        name: php7.2-fpm
+        state: restarted
+
+    - name: nginx default
+      become: yes
+      copy:
+        src: ~/test/default
+        dest: /etc/nginx/sites-enabled/default
+    - name: nginx restart
+      become: yes
+      service:
+        name: nginx
+        state: restarted
+    
+    - name: phpinfo()
+      become: yes
+      copy:
+        src: ~/test/phpinfo.php
+        dest: /var/www/html/info.php
+        
